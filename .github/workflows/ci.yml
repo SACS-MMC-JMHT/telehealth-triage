@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: telehealth_test
+          POSTGRES_USER: telehealth
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DJANGO_SETTINGS_MODULE: telehealth.settings.development
+      DATABASE_URL: postgres://telehealth:testpass@localhost:5432/telehealth_test
+      SECRET_KEY: ci-not-secret
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run tests with coverage
+        working-directory: backend
+        run: |
+          coverage run -m pytest --tb=short -q
+          coverage report --fail-under=80
+
+      - name: Build Docker image
+        run: docker build -t telehealth-truage .
