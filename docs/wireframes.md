@@ -470,6 +470,3 @@ Breakpoints: 375 px mobile and 1280 px desktop.
     Group.objects.get_or_create(name='Clinicians')
     "
     # Then assign clinician users to the group via /admin/auth/user/
-ENDOFDOC
-
-echo "Written: $(wc -l < $HOME/SACS-MMC-JMHT/telehealth-triage/docs/DESIGN.md) lines"
