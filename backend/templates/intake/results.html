@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Your Triage Result{% endblock %}
+{% block content %}
+<section class="triage-result card triage-{{ intake.triage_level }}">
+  <h1>Your Routing Recommendation</h1>
+  <div class="triage-badge">{{ intake.get_triage_level_display }}</div>
+  <p class="triage-reason">{{ intake.triage_reason }}</p>
+  <p class="disclaimer">
+    ⚠️ This is a routing suggestion only — <strong>not a medical diagnosis</strong>.
+    A clinician will review your intake. If you are in immediate danger, call 911.
+  </p>
+  <dl class="summary">
+    <dt>Severity reported</dt><dd>{{ intake.severity }}/10</dd>
+    <dt>Duration</dt><dd>{{ intake.duration_hours }} hour(s)</dd>
+    <dt>Submitted</dt><dd>{{ intake.created_at }}</dd>
+  </dl>
+  <a href="{% url 'intake:form' %}" class="btn">Submit another intake</a>
+</section>
+{% endblock %}
